@@ -4,7 +4,7 @@ import torchvision
 from torchvision.transforms import functional as F
 import cv2
 import numpy as np
-import time 
+import time
 
 model = torchvision.models.detection.fasterrcnn_resnet50_fpn(pretrained=True)
 model.eval()
@@ -32,23 +32,23 @@ def draw_boxes(image, boxes, labels, scores, threshold=0.5):
             label = COCO_INSTANCE_CATEGORY_NAMES[labels[i]]
             score = scores[i]
             color = (np.random.randint(0, 255), np.random.randint(0, 255), np.random.randint(0, 255))
-            
+
             start_point = (int(box[0]), int(box[1]))
             end_point = (int(box[2]), int(box[3]))
 
-            cv2.rectangle(image, start_point, end_point, color, 3)
+            cv2.rectangle(image, start_point, end_point, color, 2)
 
             text = f"{label}: {score:.2f}"
-            font_scale = 0.6
-            font_thickness = 2
+            font_scale = 0.4
+            font_thickness = 1
             label_size = cv2.getTextSize(text, cv2.FONT_HERSHEY_SIMPLEX, font_scale, font_thickness)[0]
-            
+
             label_background = (start_point[0], start_point[1] - label_size[1] - 5)
             label_end = (start_point[0] + label_size[0], start_point[1])
             cv2.rectangle(image, label_background, label_end, color, -1)
-            
+
             cv2.putText(image, text, (start_point[0], start_point[1] - 5), cv2.FONT_HERSHEY_SIMPLEX, font_scale, (255, 255, 255), font_thickness)
-    
+
     return image
 
 def detect_objects(image_path, confidence_threshold=0.5):
@@ -58,7 +58,7 @@ def detect_objects(image_path, confidence_threshold=0.5):
     start_time = time.time()
 
     image = cv2.imread(image_path)
-    
+
     if image is None:
         print(f"Error: Could not load image from {image_path}. Please check the file path and ensure the image exists.")
         return None
@@ -82,15 +82,16 @@ def detect_objects(image_path, confidence_threshold=0.5):
     return detected_image
 
 if __name__ == "__main__":
-    image_path = '/coco.png'
-    
+    image_path = '/content/coco.png'
+
     detected_image = detect_objects(image_path, confidence_threshold=0.5)
 
     if detected_image is not None:
-        cv2_imshow(detected_image)  
+        cv2_imshow(detected_image)
         print("Object detection complete. Image displayed.")
     else:
         print("No image to display.")
+
 
 
 #Inference time
